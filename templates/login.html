@@ -64,18 +64,18 @@
 </head>
 <body>
     <div class="container">
-        <h2>Giris Yap</h2>
+        <h2>Login</h2>
         <div class="mode {{ 'vulnerable' if mode == 'vulnerable' else 'secure' }}">
             {% if mode == 'vulnerable' %}
-                ⚠ SAVUNMASIZ SISTEM
+                 VULNERABLE SYSTEM
             {% else %}
-                ✓ GUVENLI SISTEM
+                SECURE SYSTEM
             {% endif %}
         </div>
         <form method="POST">
-            <input type="text" name="username" placeholder="Kullanici adi" required>
-            <input type="text" name="password" placeholder="Sifre" required>
-            <button type="submit">Giris</button>
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="text" name="password" placeholder="Password" required>
+            <button type="submit">Login</button>
         </form>
         {% if message %}
             <div class="message {{ 'success' if success else 'error' }}">

@@ -12,13 +12,13 @@ def login():
         username = request.form['username']
         password = request.form['password']
         
-        # ⚠ TEHLIKELI: String birlestirme ile SQL sorgusu
-        # Bu kod SQL Injection saldirisina acik!
+        # WARNING: DANGEROUS - Building SQL query with string concatenation
+        # This code is vulnerable to SQL Injection attacks!
         query = "SELECT * FROM users WHERE username='" + username + "' AND password='" + password + "'"
         
-        # Olusan sorguyu terminale yazdir (egitim amacli)
+        # Print the resulting query to terminal (for educational purposes)
         print("\n" + "="*60)
-        print("Calistirilan SQL Sorgusu:")
+        print("Executed SQL Query:")
         print(query)
         print("="*60 + "\n")
         
@@ -30,12 +30,12 @@ def login():
             user = cursor.fetchone()
             
             if user:
-                message = f"Basarili! Hosgeldin {user[1]} (Rol: {user[3]})"
+                message = f"Success! Welcome {user[1]} (Role: {user[3]})"
                 success = True
             else:
-                message = "Hatali kullanici adi veya sifre!"
+                message = "Invalid username or password!"
         except Exception as e:
-            message = f"Hata: {str(e)}"
+            message = f"Error: {str(e)}"
         finally:
             conn.close()
     
@@ -43,7 +43,7 @@ def login():
 
 if __name__ == '__main__':
     print("\n" + "="*60)
-    print("⚠  SAVUNMASIZ SISTEM CALISIYOR")
-    print("Tarayicidan acin: http://127.0.0.1:5000")
+    print("WARNING: VULNERABLE SYSTEM RUNNING")
+    print("Open in browser: http://127.0.0.1:5000")
     print("="*60 + "\n")
     app.run(debug=True, port=5000)

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request
 import sqlite3
 import bcrypt
 import re
@@ -6,7 +6,7 @@ import re
 app = Flask(__name__)
 
 def is_valid_username(username):
-    """Kullanici adi kontrolu - sadece harf, rakam, alt cizgi"""
+    """Username validation - only letters, digits, and underscore allowed"""
     if not username or len(username) < 3 or len(username) > 20:
         return False
     return bool(re.match(r'^[a-zA-Z0-9_]+$', username))
@@ -20,18 +20,18 @@ def login():
         username = request.form['username']
         password = request.form['password']
         
-        # GUVENLIK 1: Input validation
+        # SECURITY 1: Input validation
         if not is_valid_username(username):
-            message = "Gecersiz kullanici adi! (3-20 karakter, sadece harf/rakam/_)"
+            message = "Invalid username! (3-20 characters, only letters/digits/_)"
             return render_template('login.html', mode='secure', message=message, success=False)
         
-        # GUVENLIK 2: Prepared statement (SQL Injection korumasi)
+        # SECURITY 2: Prepared statement (SQL Injection protection)
         query = "SELECT * FROM users WHERE username=?"
         
         print("\n" + "="*60)
-        print("Calistirilan SQL Sorgusu (Prepared Statement):")
-        print(f"Sorgu: {query}")
-        print(f"Parametre: username={username!r}")
+        print("Executed SQL Query (Prepared Statement):")
+        print(f"Query: {query}")
+        print(f"Parameter: username={username!r}")
         print("="*60 + "\n")
         
         conn = sqlite3.connect('users.db')
@@ -41,14 +41,14 @@ def login():
             cursor.execute(query, (username,))
             user = cursor.fetchone()
             
-            # GUVENLIK 3: Bcrypt ile sifre dogrulama
+            # SECURITY 3: Password verification with bcrypt
             if user and bcrypt.checkpw(password.encode('utf-8'), user[2]):
-                message = f"Basarili! Hosgeldin {user[1]} (Rol: {user[3]})"
+                message = f"Success! Welcome {user[1]} (Role: {user[3]})"
                 success = True
             else:
-                message = "Hatali kullanici adi veya sifre!"
+                message = "Invalid username or password!"
         except Exception as e:
-            message = f"Hata: {str(e)}"
+            message = f"Error: {str(e)}"
         finally:
             conn.close()
     
@@ -66,14 +66,14 @@ def register():
         
         # Input validation
         if not is_valid_username(username):
-            message = "Gecersiz kullanici adi! (3-20 karakter, sadece harf/rakam/_)"
+            message = "Invalid username! (3-20 characters, only letters/digits/_)"
             return render_template('register.html', message=message, success=False)
         
         if len(password) < 6:
-            message = "Sifre en az 6 karakter olmali!"
+            message = "Password must be at least 6 characters!"
             return render_template('register.html', message=message, success=False)
         
-        # Sifreyi hashle
+        # Hash the password
         hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
         
         conn = sqlite3.connect('users.db')
@@ -85,12 +85,12 @@ def register():
                 (username, hashed, 'user')
             )
             conn.commit()
-            message = f"Hesap olusturuldu! Artik giris yapabilirsiniz: {username}"
+            message = f"Account created! You can now log in: {username}"
             success = True
         except sqlite3.IntegrityError:
-            message = "Bu kullanici adi zaten alinmis!"
+            message = "This username is already taken!"
         except Exception as e:
-            message = f"Hata: {str(e)}"
+            message = f"Error: {str(e)}"
         finally:
             conn.close()
     
@@ -99,12 +99,12 @@ def register():
 
 if __name__ == '__main__':
     print("\n" + "="*60)
-    print("✓  GUVENLI SISTEM CALISIYOR (Bonus Ozelliklerle)")
-    print("Giris: http://127.0.0.1:5001")
-    print("Kayit: http://127.0.0.1:5001/register")
-    print("Guvenlik onlemleri:")
-    print("  1. Prepared Statements (SQL Injection korumasi)")
-    print("  2. bcrypt ile sifre hashleme")
-    print("  3. Input validation (girdi dogrulama)")
+    print("SECURE SYSTEM RUNNING (with Bonus Features)")
+    print("Login: http://127.0.0.1:5001")
+    print("Register: http://127.0.0.1:5001/register")
+    print("Security measures:")
+    print("  1. Prepared Statements (SQL Injection protection)")
+    print("  2. Password hashing with bcrypt")
+    print("  3. Input validation")
     print("="*60 + "\n")
     app.run(debug=True, port=5001)

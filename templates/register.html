@@ -72,12 +72,12 @@
     <div class="container">
         <h2>Kayit Ol</h2>
         <div class="mode">
-            ✓ GUVENLI KAYIT (bcrypt + validation)
+            SECURE REGISTRATION (bcrypt + validation)
         </div>
         <form method="POST">
-            <input type="text" name="username" placeholder="Kullanici adi (3-20 karakter)" required>
-            <input type="password" name="password" placeholder="Sifre (en az 6 karakter)" required>
-            <button type="submit">Hesap Olustur</button>
+            <input type="text" name="username" placeholder="Username (3-20 characters)" required>
+            <input type="password" name="password" placeholder="Password (at least 6 characters)" required>
+            <button type="submit">Create Account</button>
         </form>
         {% if message %}
             <div class="message {{ 'success' if success else 'error' }}">
@@ -85,7 +85,7 @@
             </div>
         {% endif %}
         <div class="link">
-            <a href="/">← Giris sayfasina don</a>
+            <a href="/">← ← Back to login page</a>
         </div>
     </div>
 </body>
