@@ -17,7 +17,7 @@ cursor.execute('''
         role TEXT DEFAULT 'user'
     )
 ''')
-
+PS C:\Users\user\Desktop\sql-injection-projesi>
 # Test users - passwords will be stored in hashed form
 test_users = [
     ('admin', 'admin123', 'admin'),
